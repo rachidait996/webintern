@@ -50,7 +50,7 @@ const ApplicationsManagement = () => {
   // Update status of application
   const updateStatus = async (id, newStatus) => {
     try {
-      const response = await fetch(`/api/offres/${id}/updateStatus`, {
+      const response = await fetch(`/api/offres/applications/${id}/updateStatus`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -106,9 +106,9 @@ const ApplicationsManagement = () => {
                               <Badge
                                 color=""
                                 className={`badge-dot mr-4 ${
-                                  app.statut === "encours"
+                                  app.statut === "ENCOURS"
                                     ? "bg-warning"
-                                    : app.statut === "accepte"
+                                    : app.statut === "ACCEPTE"
                                     ? "bg-success"
                                     : "bg-danger"
                                 }`}
@@ -148,6 +148,7 @@ const ApplicationsManagement = () => {
                                     </a>
                                   </p>
                                   <Button
+                                  
                                     color="success"
                                     size="sm"
                                     onClick={() => updateStatus(app.postulationId, "ACCEPTE")}

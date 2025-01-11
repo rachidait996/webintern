@@ -2,6 +2,7 @@ package projetsi.internapp.Controllers;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.EntityNotFoundException;
 import projetsi.internapp.dto.ApplicationDetailsDTO;
+import projetsi.internapp.entities.statutpos;
 import projetsi.internapp.services.PostulationService;
 
 @RestController
@@ -45,12 +48,20 @@ public class ApplicationsController {
      * Endpoint to update the status of an application (postulation).
      */
     @PutMapping("/{id}/updateStatus")
-    public ResponseEntity<String> updateStatus(@PathVariable Long id, @RequestBody String statut) {
+    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
         try {
-            postulationService.updateStatus(id, statut);
-            return ResponseEntity.ok("Status updated successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to update status");
+            String status = payload.get("statut");
+            if (status == null) {
+                return ResponseEntity.badRequest().body("Status field 'statut' is required");
+            }
+            
+            postulationService.updateStatus(id, status);
+            return ResponseEntity.ok().body("Status updated successfully to " + status.toUpperCase());
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -2,10 +2,13 @@ package projetsi.internapp.services;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import projetsi.internapp.dto.ApplicationDetailsDTO;
 import projetsi.internapp.entities.Postulation;
 import projetsi.internapp.entities.statutpos;
@@ -27,15 +30,24 @@ public class PostulationService {
     /**
      * Update the status of a postulation (application).
      */
-    public void updateStatus(Long id, String statut) {
-        Postulation postulation = postulationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Postulation not found with ID: " + id));
+    @Transactional
+    public void updateStatus(Long postulationId, String status) {
+        // Convert string to enum
+        statutpos newStatus;
+        try {
+            newStatus = statutpos.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid status value: " + status + 
+                ". Allowed values are: ENCOURS, ACCEPTE, REFUSE");
+        }
 
-        statutpos statutEnum = statutpos.valueOf(statut.toUpperCase());
-        postulation.setStatut(statutEnum);
+        // Find and update the postulation
+        Postulation postulation = postulationRepository.findById(postulationId)
+            .orElseThrow(() -> new EntityNotFoundException("Postulation not found with id: " + postulationId));
+
+        postulation.setStatut(newStatus);
         postulationRepository.save(postulation);
     }
-
     /**
      * Delete an application (postulation).
      */

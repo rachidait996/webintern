@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Indexgescompany = () => {
   const [formData, setFormData] = useState({
@@ -6,14 +6,35 @@ const Indexgescompany = () => {
     description: "",
     startDate: "",
     endDate: "",
-    location: "ONSITE", // Valeur par défaut
+    location: "ONSITE", // Default value
     positions: "",
     document: null,
+    entrepriseId: "", // Added for holding the selected Entreprise ID
   });
+
+  const [entreprises, setEntreprises] = useState([]); // State to hold entreprises
+
+  // Fetch entreprises from backend to populate the dropdown
+  const fetchEntreprises = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/entreprises");
+      if (!response.ok) {
+        throw new Error("Failed to fetch entreprises");
+      }
+      const data = await response.json();
+      setEntreprises(data);
+    } catch (error) {
+      console.error("Error fetching entreprises:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEntreprises(); // Fetch entreprises on component mount
+  }, []);
 
   const locationOptions = ["ONSITE", "REMOTE", "HYBRID"];
 
-  // Gestion des changements de formulaire
+  // Handle form changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prev) => ({
@@ -22,7 +43,7 @@ const Indexgescompany = () => {
     }));
   };
 
-  // Envoi des données au backend
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -34,6 +55,7 @@ const Indexgescompany = () => {
       lieu: formData.location,
       nombredeplace: formData.positions,
       conventionDeStage: formData.document ? formData.document.name : "",
+      entreprise: { raisonSocialeEntreprise: formData.entrepriseId }, // Send the selected entreprise's raisonSocialeEntreprise
     };
 
     try {
@@ -60,6 +82,7 @@ const Indexgescompany = () => {
         location: "ONSITE",
         positions: "",
         document: null,
+        entrepriseId: "", // Reset the entreprise ID
       });
     } catch (error) {
       console.error("Erreur:", error);
@@ -67,7 +90,7 @@ const Indexgescompany = () => {
     }
   };
 
-  // Styles (facultatif)
+  // Styles (optional)
   const styles = {
     container: {
       maxWidth: "600px",
@@ -162,6 +185,26 @@ const Indexgescompany = () => {
           onChange={handleChange}
           style={styles.input}
         />
+
+        {/* Entreprise dropdown */}
+        <select
+          name="entrepriseId"
+          value={formData.entrepriseId}
+          onChange={handleChange}
+          style={styles.input}
+          required
+        >
+          <option value="">Sélectionner une entreprise</option>
+          {entreprises.map((entreprise) => (
+            <option
+              key={entreprise.raisonSocialeEntreprise}
+              value={entreprise.raisonSocialeEntreprise}
+            >
+              {entreprise.raisonSocialeEntreprise}
+            </option>
+          ))}
+        </select>
+
         <button type="submit" style={styles.btnSubmit}>
           Publier l'Offre
         </button>

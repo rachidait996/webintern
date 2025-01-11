@@ -1,13 +1,15 @@
 package projetsi.internapp.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import projetsi.internapp.entities.Entreprise;
-import projetsi.internapp.repositories.EntrepriseRepository;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+import projetsi.internapp.entities.Entreprise;
+import projetsi.internapp.repositories.EntrepriseRepository;
 
 @Service
 @Transactional
@@ -27,6 +29,6 @@ public class EntrepriseService {
 
     public Optional<Entreprise> getEntrepriseByRaisonSociale(String raisonSociale) {
         logger.info("Fetching entreprise with raison sociale: " + raisonSociale);
-        return entrepriseRepository.findByRaisonSocialeEntreprise(raisonSociale);
+        return Optional.ofNullable(entrepriseRepository.findByRaisonSocialeEntreprise(raisonSociale));
     }
 }

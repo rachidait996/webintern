@@ -43,5 +43,7 @@ public class GestionnaireEntrepriseService {
     }
 
     // Find gestionnaire by email
-   
+    public Optional<GestionnaireEntreprise> findByEmail(String email) {
+        return gestionnaireRepository.findByEmailGestionnaire(email);
+    }
 }
