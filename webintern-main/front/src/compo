@@ -1,0 +1,42 @@
+src/
+├── layouts/
+│   ├── auth/
+│   │   ├── EspaceEntrepriseAuth.js
+│   ├── MainPage.js
+|──routes.js
+|──views/
+   |──examples/
+      |──companyLogin.js
+├── pages/
+│   ├── companyRepresentative/
+│   │   ├── Dashboard.js
+│   │   ├── CreateInternshipOffer.js
+│   │   └── InternshipOffersList.js
+│   ├── majorRepresentative/
+│   │   ├── Dashboard.js
+│   │   ├── ViewInternshipOffers.js
+│   │   └── SelectInternshipOffers.js
+│   ├── student/
+│   │   ├── Dashboard.js
+│   │   ├── ViewAvailableOffers.js
+│   │   └── ApplyForInternship.js
+│   └── shared/
+│       ├── NotFound.js
+│       ├── Unauthorized.js
+│       └── Profile.js
+├── services/
+│   ├── AuthService.js
+│   ├── InternshipOfferService.js
+│   ├── CompanyService.js
+│   ├── MajorService.js
+│   └── StudentService.js
+├── styles/
+│   ├── GlobalStyles.css
+│   ├── Sidebar.css
+│   ├── Header.css
+│   └── Footer.css
+├── App.js
+├── index.js
+└── routes/
+    ├── PrivateRoute.js
+    └── RoleBasedRoutes.js
